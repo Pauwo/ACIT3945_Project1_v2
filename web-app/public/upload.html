@@ -7,13 +7,83 @@
 </head>
 <body>
   <h1>Upload Video</h1>
+  <p id="user-info">Welcome, <span id="username"></span>!</p>
+
+
   <form id="upload-form" enctype="multipart/form-data">
-    <input type="file" name="video" required />
+    <input type="file" name="video" accept="video/*" required />
     <button type="submit">Upload</button>
   </form>
 
+  <h2>Your Videos</h2>
+  <p><a href="videos.html">View all your videos</a></p>
+  <ul id="video-list"></ul>
+  <p><a href="#" id="logout-link">Logout</a></p>
+
   <script>
     const uploadForm = document.getElementById('upload-form');
+    const videoList = document.getElementById('video-list');
+    const usernameElement = document.getElementById('username');
+
+    async function fetchUserInfo() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+        window.location.href = 'index.html';
+        return;
+        }
+
+        try {
+        const response = await fetch('/user-info', {
+            headers: {
+            'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const userInfo = await response.json();
+            usernameElement.textContent = userInfo.username;
+        } else {
+            throw new Error('Failed to fetch user info');
+        }
+        } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to verify user login. Please login again.');
+        window.location.href = 'index.html';
+        }
+    }
+
+    // Call fetchUserInfo when the page loads
+    fetchUserInfo();
+
+    // Function to fetch and display videos
+    // Function to fetch and display videos
+    async function fetchVideos() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You must be logged in to view videos.');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        const response = await fetch('/videos', {
+            headers: {
+            'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.ok) {
+            const videos = await response.json();
+            videoList.innerHTML = videos.map(video => 
+            `<li>${video.original_name || video.path.split('/').pop()}</li>`
+            ).join('');
+        } else {
+            alert('Failed to fetch videos');
+        }
+    }
+
+
+    // Fetch videos when the page loads
+    fetchVideos();
 
     uploadForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -38,10 +108,18 @@
 
       if (response.ok) {
         alert('Video uploaded successfully');
+        fetchVideos(); // Refresh the video list after successful upload
       } else {
         alert('Upload failed');
       }
     });
+
+    document.getElementById('logout-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('token');
+        window.location.href = 'index.html';
+    });
+
   </script>
 </body>
 </html>

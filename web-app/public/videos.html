@@ -4,39 +4,103 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Your Videos - Video Upload System</title>
+  <style>
+    #video-player {
+      display: none;
+      max-width: 100%;
+    }
+  </style>
 </head>
 <body>
   <h1>Your Videos</h1>
+  <div id="user-info"></div>
   <ul id="video-list"></ul>
+  <video id="video-player" controls></video>
+  <p><a href="upload.html">Upload a new video</a></p>
+  <p><a href="#" id="logout-link">Logout</a></p>
 
   <script>
-    window.onload = async function() {
+    const videoList = document.getElementById('video-list');
+    const videoPlayer = document.getElementById('video-player');
+    const userInfo = document.getElementById('user-info');
+
+    async function fetchUserInfo() {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('You must be logged in to view your videos.');
         window.location.href = 'index.html';
         return;
       }
 
-      const response = await fetch('/videos', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.ok) {
-        const videos = await response.json();
-        const videoList = document.getElementById('video-list');
-        videos.forEach(video => {
-          const listItem = document.createElement('li');
-          listItem.innerHTML = `<a href="/video/${video.path}">${video.path}</a>`;
-          videoList.appendChild(listItem);
+      try {
+        const response = await fetch('/user-info', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
-      } else {
-        alert('Failed to fetch videos');
+
+        if (response.ok) {
+          const user = await response.json();
+          userInfo.textContent = `Logged in as: ${user.username}`;
+          return user.username;
+        } else {
+          throw new Error('Failed to fetch user info');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to verify user login. Please login again.');
+        window.location.href = 'index.html';
       }
-    };
+    }
+
+    async function fetchVideos(username) {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('/videos', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const videos = await response.json();
+          videoList.innerHTML = videos.map(video => {
+            const filename = video.path.split('/').pop();
+            return `<li><a href="#" data-video="/video/${username}/${filename}">${video.original_name}</a></li>`;
+          }).join('');
+
+          videoList.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (e.target.tagName === 'A') {
+                const token = localStorage.getItem('token');
+                const videoUrl = e.target.dataset.video;
+                videoPlayer.src = `${videoUrl}?token=${token}`;
+                videoPlayer.style.display = 'block';
+                videoPlayer.play();
+            }
+            });
+        } else {
+          throw new Error('Failed to fetch videos');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+      }
+    }
+
+    async function init() {
+      const username = await fetchUserInfo();
+      if (username) {
+        await fetchVideos(username);
+      }
+    }
+
+    init();
+
+    document.getElementById('logout-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+    });
   </script>
 </body>
 </html>

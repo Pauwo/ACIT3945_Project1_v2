@@ -12,12 +12,14 @@ services:
       MYSQL_DB: video_db
     volumes:
       # - ./web-app:/app
-      - ./storage:/storage
+      - video_storage:/storage
     networks:
       - video-net
     depends_on:
-      - mysql
-      - storage
+      mysql:
+        condition: service_healthy
+      storage:
+        condition: service_started
 
 
   # MySQL Container
@@ -38,13 +40,13 @@ services:
       start_period: 10s
       timeout: 5s
 
-      
+
   # File Storage Container
   storage:
     image: alpine
     command: tail -f /dev/null  
     volumes:
-      - ./storage:/storage    
+      - video_storage:/storage
     networks:
       - video-net
 
@@ -57,6 +59,7 @@ networks:
 volumes:
   # web-app:
   video_mysql: 
-  uploads:   
+  video_storage:
+
 
 
