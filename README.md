@@ -7,15 +7,15 @@ docker-compose up -d
 
 and you will get 3 containers and 1 new images and 2 volumns.
 
-**- Container:**
+**Container:**
   - newnew-storage-1                                                                                                                                                                                                                              2.5s
   - newnew-mysql-1                                                                                                                                                                                                                            13.1s
   - newnew-web-app-1
    
-**- Image:**
+**Image:**
   - newnew-web-app
 
-**- Volume:**
+**Volume:**
   - video_mysql
   - video_storage
 
