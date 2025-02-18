@@ -1,0 +1,20 @@
+{
+    "name": "video-upload-system",
+    "version": "1.0.0",
+    "description": "A simple video upload system",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.17.1",
+      "mysql": "^2.18.1",
+      "multer": "^1.4.2",
+      "bcryptjs": "^2.4.3",
+      "jsonwebtoken": "^8.5.1",
+      "cors": "^2.8.5"
+    },
+    "author": "",
+    "license": "ISC"
+  }
+  

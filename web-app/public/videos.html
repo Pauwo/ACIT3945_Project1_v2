@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Videos - Video Upload System</title>
+</head>
+<body>
+  <h1>Your Videos</h1>
+  <ul id="video-list"></ul>
+
+  <script>
+    window.onload = async function() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('You must be logged in to view your videos.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const response = await fetch('/videos', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const videos = await response.json();
+        const videoList = document.getElementById('video-list');
+        videos.forEach(video => {
+          const listItem = document.createElement('li');
+          listItem.innerHTML = `<a href="/video/${video.path}">${video.path}</a>`;
+          videoList.appendChild(listItem);
+        });
+      } else {
+        alert('Failed to fetch videos');
+      }
+    };
+  </script>
+</body>
+</html>
