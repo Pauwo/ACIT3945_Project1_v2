@@ -4,11 +4,11 @@
 This project is a containerized Video Streaming System that allows users to register, log in, upload, and stream videos securely. It consists of multiple microservices, including web app, authentication, file storage, and MySQL.
 
 ## Features
-**Video Uploading** – Users can upload videos and store them in a dedicated storage container.
-**Video Streaming** – Videos can be streamed securely using token-based authentication.
-**User Authentication** – Secure login using JWT tokens.
-**MySQL Database** – Stores user information and video metadata.
-**Containerized Deployment** – The system runs in isolated Docker containers for easy setup and scalability.  
+- **Video Uploading** – Users can upload videos and store them in a dedicated storage container.
+- **Video Streaming** – Videos can be streamed securely using token-based authentication.
+- **User Authentication** – Secure login using JWT tokens.
+- **MySQL Database** – Stores user information and video metadata.
+- **Containerized Deployment** – The system runs in isolated Docker containers for easy setup and scalability.  
 
 ## Microservices  
 
