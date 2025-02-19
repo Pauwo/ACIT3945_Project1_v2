@@ -47,13 +47,13 @@ This project is a containerized Video Streaming System that allows users to regi
 
 ### Run the Project Locally
 
-1. Clone the repository:  
+1. **Clone the repository:** 
 ```sh
 git clone https://github.com/Katy0903/ACIT3495_project1.git
 cd ACIT3495_project1
 ```
 
-2. Start the services using Docker Compose:  
+2. **Start the services using Docker Compose:**  
 ```sh
 docker-compose up -d
 ```
@@ -62,7 +62,7 @@ This command will:
 - Start the `mysql` and `storage` services.
 - Create the necessary networks and volumes.
 
-3. Access the web app in your browser:  
+3. **Access the web app in your browser:**  
 ```
 http://localhost:8080
 ```
